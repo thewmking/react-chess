@@ -1,30 +1,85 @@
-import Board from './Board.js'
 import React from 'react';
+import Board from './Board.js'
+import King from './pieces/King.js';
+import Queen from './pieces/Queen.js';
+import Rook from './pieces/Rook.js';
+import Knight from './pieces/Knight.js';
+import Bishop from './pieces/Bishop.js';
+import Pawn from './pieces/Pawn.js';
 
 class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       history: [{
-        squares: Array(64).fill(null)
+        squareArray: this.defaultArray()
       }],
       stepNumber: 0,
       xIsNext: true
     }
   }
 
+  defaultArray() {
+    let array = new Array(8)
+    for (let i=0; i<8; i++) {
+      array[i] = [null,null,null,null,null,null,null,null]
+    }
+
+    // black pieces
+    array[0][0] = <Rook color="black"/>
+    array[0][1] = <Knight color="black"/>
+    array[0][2] = <Bishop color="black"/>
+    array[0][3] = <Queen color="black"/>
+    array[0][4] = <King color="black"/>
+    array[0][5] = <Bishop color="black"/>
+    array[0][6] = <Knight color="black"/>
+    array[0][7] = <Rook color="black"/>
+    array[1] = [
+      <Pawn color="black"/>,
+      <Pawn color="black"/>,
+      <Pawn color="black"/>,
+      <Pawn color="black"/>,
+      <Pawn color="black"/>,
+      <Pawn color="black"/>,
+      <Pawn color="black"/>,
+      <Pawn color="black"/>
+    ]
+
+    // white pieces
+    array[7][0] = <Rook color="white"/>
+    array[7][1] = <Knight color="white"/>
+    array[7][2] = <Bishop color="white"/>
+    array[7][3] = <Queen color="white"/>
+    array[7][4] = <King color="white"/>
+    array[7][5] = <Bishop color="white"/>
+    array[7][6] = <Knight color="white"/>
+    array[7][7] = <Rook color="white"/>
+    array[6] = [
+      <Pawn color="white"/>,
+      <Pawn color="white"/>,
+      <Pawn color="white"/>,
+      <Pawn color="white"/>,
+      <Pawn color="white"/>,
+      <Pawn color="white"/>,
+      <Pawn color="white"/>,
+      <Pawn color="white"/>
+    ]
+
+    return array
+  }
+
   handleClick(i) {
     console.log('Handling click for square: ' + i);
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[this.state.stepNumber];
-    const squares = current.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
+    const squareArray = current.squareArray.slice();
+    if (calculateWinner(squareArray) || squareArray[i]) {
       return;
     }
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    squareArray[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
       history: history.concat([{
-        squares: squares
+        squareArray: squareArray
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext
@@ -41,7 +96,7 @@ class Game extends React.Component {
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
+    const winner = calculateWinner(current.squareArray);
 
     const moves = history.map((step, move) => {
       const desc = move ?
@@ -60,12 +115,11 @@ class Game extends React.Component {
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
-
     return (
       <div className="game">
         <div className="game-board">
           <Board
-            squares={current.squares}
+            squareArray={current.squareArray}
             onClick={(i) => this.handleClick(i)}
           />
         </div>
@@ -80,22 +134,7 @@ class Game extends React.Component {
 
 export default Game;
 
-function calculateWinner(squares) {
-  // const lines = [
-  //   [0, 1, 2],
-  //   [3, 4, 5],
-  //   [6, 7, 8],
-  //   [0, 3, 6],
-  //   [1, 4, 7],
-  //   [2, 5, 8],
-  //   [0, 4, 8],
-  //   [2, 4, 6]
-  // ];
-  // for (let i = 0; i < lines.length; i++) {
-  //   const [a, b, c] = lines[i];
-  //   if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-  //     return squares[a];
-  //   }
-  // }
+function calculateWinner(squareArray) {
+
   return null;
 }
