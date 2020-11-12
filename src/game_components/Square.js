@@ -1,6 +1,7 @@
 function Square(props) {
+  const classes = props.active ? 'square active' : 'square'
   return (
-    <button className="square" onClick={ props.onClick }>
+    <button className={classes} onClick={ props.onClick }>
       {props.value}
     </button>
   );

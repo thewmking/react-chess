@@ -8,6 +8,7 @@ class Board extends React.Component {
         value={square}
         onClick={() => this.props.onClick(square, rowIndex, index)}
         key={[rowIndex, index].toString()}
+        active={this.props.activeSquare && this.props.activeSquare.coordinates.toString() === [rowIndex, index].toString()}
       />
     );
   }

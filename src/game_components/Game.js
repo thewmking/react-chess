@@ -15,7 +15,8 @@ class Game extends React.Component {
         squareArray: this.defaultArray()
       }],
       stepNumber: 0,
-      xIsNext: true
+      whiteIsNext: true,
+      activeSquare: null
     }
   }
 
@@ -68,28 +69,55 @@ class Game extends React.Component {
     return array
   }
 
-  handleClick(i) {
-    console.log('Handling click for square: ' + i);
+  handleClick(square, rowIndex, index) {
+    console.log('Handling click for square: [' + rowIndex + ', ' + index + ']');
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[this.state.stepNumber];
     const squareArray = current.squareArray.slice();
-    if (calculateWinner(squareArray) || squareArray[i]) {
+
+    // check for winner
+    if (calculateWinner(squareArray)) {
       return;
     }
-    squareArray[i] = this.state.xIsNext ? 'X' : 'O';
+
+    // set activeSquare if no current activeSquare & selected square has contents
+    if (!this.state.activeSquare && squareArray[rowIndex][index]) {
+      this.setState({
+        activeSquare: { value: square, coordinates: [rowIndex, index]}
+      })
+    }
+
+    // reset activeSquare if user selects current activeSquare
+    if (this.state.activeSquare && this.state.activeSquare.coordinates.toString() === [rowIndex, index].toString()) {
+      this.setState({
+        activeSquare: null
+      })
+    }
+
+    // move selected piece if activeSquare present & next selection is empty
+    if (this.state.activeSquare && !squareArray[rowIndex][index]) {
+      squareArray[rowIndex][index] = this.state.activeSquare.value
+      var c = this.state.activeSquare.coordinates
+      squareArray[c[0]][c[1]] = null
+      this.setState({
+        activeSquare: null
+      })
+    }
+
+    // set board content & switch turns
     this.setState({
       history: history.concat([{
         squareArray: squareArray
       }]),
       stepNumber: history.length,
-      xIsNext: !this.state.xIsNext
+      whiteIsNext: !this.state.whiteIsNext
     })
   }
 
   jumpTo(step) {
     this.setState({
       stepNumber: step,
-      xIsNext: (step % 2) === 0
+      whiteIsNext: (step % 2) === 0
     });
   }
 
@@ -113,14 +141,15 @@ class Game extends React.Component {
     if (winner) {
       status = 'Winner: ' + winner;
     } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      status = 'Next player: ' + (this.state.whiteIsNext ? 'X' : 'O');
     }
     return (
       <div className="game">
         <div className="game-board">
           <Board
             squareArray={current.squareArray}
-            onClick={(i) => this.handleClick(i)}
+            onClick={(square, rowIndex, index) => this.handleClick(square, rowIndex, index)}
+            activeSquare={this.state.activeSquare}
           />
         </div>
         <div className="game-info">
