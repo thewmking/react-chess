@@ -80,13 +80,6 @@ class Game extends React.Component {
       return;
     }
 
-    // set activeSquare if no current activeSquare & selected square has contents
-    if (!this.state.activeSquare && squareArray[rowIndex][index] && (currentColor === square.props.color)) {
-      this.setState({
-        activeSquare: { value: square, coordinates: [rowIndex, index]}
-      })
-    }
-
     // if activeSquare present
     if (this.state.activeSquare) {
       // reset activeSquare if user selects current activeSquare
@@ -97,7 +90,7 @@ class Game extends React.Component {
       }
 
       // move selected piece if next selection is empty or is enemy piece
-      if (!squareArray[rowIndex][index] || (this.state.activeSquare.value.props.color !== square.props.color)) {
+      if (!squareArray[rowIndex][index] || (currentColor !== square.props.color)) {
         squareArray[rowIndex][index] = this.state.activeSquare.value
         var c = this.state.activeSquare.coordinates
         squareArray[c[0]][c[1]] = null
@@ -105,6 +98,15 @@ class Game extends React.Component {
           activeSquare: null,
           whiteIsNext: !this.state.whiteIsNext
         })
+      }
+    } else {
+      // set activeSquare if selected square has contents && is current user color
+      if (squareArray[rowIndex][index] && (currentColor === square.props.color)) {
+        this.setState({
+          activeSquare: { value: square, coordinates: [rowIndex, index]}
+        })
+      } else {
+        alert('Select a ' + currentColor + ' piece.')
       }
     }
 
