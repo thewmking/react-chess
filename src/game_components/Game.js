@@ -74,43 +74,46 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[this.state.stepNumber];
     const squareArray = current.squareArray.slice();
-
+    const currentColor = this.state.whiteIsNext ? 'white' : 'black'
     // check for winner
     if (calculateWinner(squareArray)) {
       return;
     }
 
     // set activeSquare if no current activeSquare & selected square has contents
-    if (!this.state.activeSquare && squareArray[rowIndex][index]) {
+    if (!this.state.activeSquare && squareArray[rowIndex][index] && (currentColor === square.props.color)) {
       this.setState({
         activeSquare: { value: square, coordinates: [rowIndex, index]}
       })
     }
 
-    // reset activeSquare if user selects current activeSquare
-    if (this.state.activeSquare && this.state.activeSquare.coordinates.toString() === [rowIndex, index].toString()) {
-      this.setState({
-        activeSquare: null
-      })
+    // if activeSquare present
+    if (this.state.activeSquare) {
+      // reset activeSquare if user selects current activeSquare
+      if (this.state.activeSquare.coordinates.toString() === [rowIndex, index].toString()) {
+        this.setState({
+          activeSquare: null
+        })
+      }
+
+      // move selected piece if next selection is empty or is enemy piece
+      if (!squareArray[rowIndex][index] || (this.state.activeSquare.value.props.color !== square.props.color)) {
+        squareArray[rowIndex][index] = this.state.activeSquare.value
+        var c = this.state.activeSquare.coordinates
+        squareArray[c[0]][c[1]] = null
+        this.setState({
+          activeSquare: null,
+          whiteIsNext: !this.state.whiteIsNext
+        })
+      }
     }
 
-    // move selected piece if activeSquare present & next selection is empty
-    if (this.state.activeSquare && !squareArray[rowIndex][index]) {
-      squareArray[rowIndex][index] = this.state.activeSquare.value
-      var c = this.state.activeSquare.coordinates
-      squareArray[c[0]][c[1]] = null
-      this.setState({
-        activeSquare: null
-      })
-    }
-
-    // set board content & switch turns
+    // set board history
     this.setState({
       history: history.concat([{
         squareArray: squareArray
       }]),
-      stepNumber: history.length,
-      whiteIsNext: !this.state.whiteIsNext
+      stepNumber: history.length
     })
   }
 
@@ -141,7 +144,7 @@ class Game extends React.Component {
     if (winner) {
       status = 'Winner: ' + winner;
     } else {
-      status = 'Next player: ' + (this.state.whiteIsNext ? 'X' : 'O');
+      status = 'Your move: ' + (this.state.whiteIsNext ? 'White' : 'Black');
     }
     return (
       <div className="game">
