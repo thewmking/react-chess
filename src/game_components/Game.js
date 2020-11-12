@@ -75,6 +75,7 @@ class Game extends React.Component {
     const current = history[this.state.stepNumber];
     const squareArray = current.squareArray.slice();
     const currentColor = this.state.whiteIsNext ? 'white' : 'black'
+    
     // check for winner
     if (calculateWinner(squareArray)) {
       return;
@@ -82,8 +83,9 @@ class Game extends React.Component {
 
     // if activeSquare present
     if (this.state.activeSquare) {
+      const coordinates = this.state.activeSquare.coordinates
       // reset activeSquare if user selects current activeSquare
-      if (this.state.activeSquare.coordinates.toString() === [rowIndex, index].toString()) {
+      if (coordinates.toString() === [rowIndex, index].toString()) {
         this.setState({
           activeSquare: null
         })
@@ -92,13 +94,20 @@ class Game extends React.Component {
       // move selected piece if next selection is empty or is enemy piece
       if (!squareArray[rowIndex][index] || (currentColor !== square.props.color)) {
         squareArray[rowIndex][index] = this.state.activeSquare.value
-        var c = this.state.activeSquare.coordinates
-        squareArray[c[0]][c[1]] = null
+        squareArray[coordinates[0]][coordinates[1]] = null
         this.setState({
           activeSquare: null,
           whiteIsNext: !this.state.whiteIsNext
         })
       }
+
+      // set board history
+      this.setState({
+        history: history.concat([{
+          squareArray: squareArray
+        }]),
+        stepNumber: history.length
+      })
     } else {
       // set activeSquare if selected square has contents && is current user color
       if (squareArray[rowIndex][index] && (currentColor === square.props.color)) {
@@ -107,16 +116,9 @@ class Game extends React.Component {
         })
       } else {
         alert('Select a ' + currentColor + ' piece.')
+        return;
       }
     }
-
-    // set board history
-    this.setState({
-      history: history.concat([{
-        squareArray: squareArray
-      }]),
-      stepNumber: history.length
-    })
   }
 
   jumpTo(step) {
