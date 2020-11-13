@@ -84,9 +84,9 @@ class Game extends React.Component {
 
     // if activeSquare present
     if (this.state.activeSquare) {
-      const coordinates = this.state.activeSquare.coordinates
+      const origin = this.state.activeSquare.coordinates
       // reset activeSquare if user selects current activeSquare
-      if (coordinates.toString() === dest.toString()) {
+      if (origin.toString() === dest.toString()) {
         this.setState({
           activeSquare: null
         })
@@ -94,9 +94,9 @@ class Game extends React.Component {
       }
 
       // move selected piece if selection is valid move
-      if (this.validMove(squareArray, selectedSquare, dest, currentColor, coordinates)) {
+      if (this.validMove(squareArray, selectedSquare, dest, currentColor, origin)) {
         squareArray[dest[0]][dest[1]] = this.state.activeSquare.value
-        squareArray[coordinates[0]][coordinates[1]] = null
+        squareArray[origin[0]][origin[1]] = null
         this.setState({
           activeSquare: null,
           whiteIsNext: !this.state.whiteIsNext
@@ -126,32 +126,60 @@ class Game extends React.Component {
     }
   }
 
-  validMove(squareArray, selectedSquare, dest, currentColor, coordinates) {
+  validMove(squareArray, selectedSquare, dest, currentColor, origin) {
     // return true if next selection is in available moves && is empty or is enemy piece
     console.log('dest: ')
     console.log(dest)
-    if (this.moves(squareArray, coordinates[0], coordinates[1]).includes(dest.toString()) && (!squareArray[dest[0]][dest[1]] || (currentColor !== selectedSquare.props.color))) {
+    const availableMoves = this.moves(squareArray, origin, dest, currentColor, selectedSquare)
+    if (availableMoves.includes(dest.toString()) && (!squareArray[dest[0]][dest[1]] || (currentColor !== selectedSquare.props.color))) {
       return true
     } else {
       return false
     }
   }
 
-  moves(squareArray, row, column) {
+  moves(squareArray, origin, dest, currentColor, selectedSquare) {
     const activeSquare = this.state.activeSquare
-    const moves = []
-    const range = [...Array(8).keys()]
+    const row          = origin[0]
+    const column       = origin[1]
+    const moves        = []
+    const range        = [...Array(8).keys()]
     console.log('activeSquare:')
     console.log(activeSquare)
     if (activeSquare.value.type.name.toString() === 'Pawn') {
       if (activeSquare.value.props.color === 'white') {
-        if (row === 6) { moves.push([row - 2, column]) } // option to advance 2 spaces on first move
-        if (range.includes(row - 1)) {
-          moves.push([row - 1, column])
+
+        // option to advance 2 spaces on first move
+        if (row === 6) { moves.push([row - 2, column]) }
+
+        // standard 1 space advance
+        if (range.includes(row - 1) && !squareArray[dest[0]][dest[1]]) { moves.push([row - 1, column]) }
+
+        // diagonal capture
+        if (squareArray[dest[0]][dest[1]] && selectedSquare.props.color === 'black') { // if selected square has value && is other color
+          if ((dest[0] === row - 1) && (dest[1] === column - 1)) {
+             moves.push([row - 1, column - 1])
+          }
+          if ((dest[0] === row - 1) && (dest[1] === column + 1)) {
+             moves.push([row - 1, column + 1])
+          }
         }
       } else {
-        if (row === 1) { moves.push([row + 2, column]) } // option to advance 2 spaces on first move
-        moves.push([row + 1, column])
+        // option to advance 2 spaces on first move
+        if (row === 1) { moves.push([row + 2, column]) }
+
+        // standard 1 space advance
+        if (range.includes(row + 1) && !squareArray[dest[0]][dest[1]]) { moves.push([row + 1, column]) }
+
+        // diagonal capture
+        if (squareArray[dest[0]][dest[1]] && selectedSquare.props.color === 'white') { // if selected square has value && is other color
+          if ((dest[0] === row + 1) && (dest[1] === column - 1)) {
+             moves.push([row + 1, column - 1])
+          }
+          if ((dest[0] === row + 1) && (dest[1] === column + 1)) {
+             moves.push([row + 1, column + 1])
+          }
+        }
       }
     }
     console.log('moves:');

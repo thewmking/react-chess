@@ -12,7 +12,7 @@ todo:
 - [x] handle piece moving
 - [x] handle capturing
 - [ ] add history
-- [ ] add valid moves for pawn
+- [x] add valid moves for pawn
 - [ ] add valid moves for rook
 - [ ] add valid moves for knight
 - [ ] add valid moves for bishop
