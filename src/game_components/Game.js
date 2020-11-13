@@ -1,4 +1,6 @@
 import React from 'react';
+
+// components
 import Board from './Board.js'
 import King from './pieces/King.js';
 import Queen from './pieces/Queen.js';
@@ -6,6 +8,10 @@ import Rook from './pieces/Rook.js';
 import Knight from './pieces/Knight.js';
 import Bishop from './pieces/Bishop.js';
 import Pawn from './pieces/Pawn.js';
+
+// moves
+import {pawnMoves} from '../moves/pawnMoves.js'
+
 
 class Game extends React.Component {
   constructor(props) {
@@ -142,50 +148,56 @@ class Game extends React.Component {
     const activeSquare = this.state.activeSquare
     const row          = origin[0]
     const column       = origin[1]
-    const moves        = []
+    let moves          = []
     const range        = [...Array(8).keys()]
     console.log('activeSquare:')
     console.log(activeSquare)
     if (activeSquare.value.type.name.toString() === 'Pawn') {
-      if (activeSquare.value.props.color === 'white') {
-
-        // option to advance 2 spaces on first move
-        if (row === 6) { moves.push([row - 2, column]) }
-
-        // standard 1 space advance
-        if (range.includes(row - 1) && !squareArray[dest[0]][dest[1]]) { moves.push([row - 1, column]) }
-
-        // diagonal capture
-        if (squareArray[dest[0]][dest[1]] && selectedSquare.props.color === 'black') { // if selected square has value && is other color
-          if ((dest[0] === row - 1) && (dest[1] === column - 1)) {
-             moves.push([row - 1, column - 1])
-          }
-          if ((dest[0] === row - 1) && (dest[1] === column + 1)) {
-             moves.push([row - 1, column + 1])
-          }
-        }
-      } else {
-        // option to advance 2 spaces on first move
-        if (row === 1) { moves.push([row + 2, column]) }
-
-        // standard 1 space advance
-        if (range.includes(row + 1) && !squareArray[dest[0]][dest[1]]) { moves.push([row + 1, column]) }
-
-        // diagonal capture
-        if (squareArray[dest[0]][dest[1]] && selectedSquare.props.color === 'white') { // if selected square has value && is other color
-          if ((dest[0] === row + 1) && (dest[1] === column - 1)) {
-             moves.push([row + 1, column - 1])
-          }
-          if ((dest[0] === row + 1) && (dest[1] === column + 1)) {
-             moves.push([row + 1, column + 1])
-          }
-        }
-      }
+      moves = pawnMoves(activeSquare, row, column, dest, squareArray, currentColor, selectedSquare, range)
     }
     console.log('moves:');
     console.log(moves)
     return moves.map(x => x.toString());
   }
+
+  // pawnMoves(activeSquare, row, column, dest, squareArray, currentColor, selectedSquare, range) {
+  //   const moves = []
+  //   if (activeSquare.value.props.color === 'white') {
+  //
+  //     // option to advance 2 spaces on first move
+  //     if (row === 6) { moves.push([row - 2, column]) }
+  //
+  //     // standard 1 space advance
+  //     if (range.includes(row - 1) && !squareArray[dest[0]][dest[1]]) { moves.push([row - 1, column]) }
+  //
+  //     // diagonal capture
+  //     if (squareArray[dest[0]][dest[1]] && selectedSquare.props.color === 'black') { // if selected square has value && is other color
+  //       if ((dest[0] === row - 1) && (dest[1] === column - 1)) {
+  //          moves.push([row - 1, column - 1])
+  //       }
+  //       if ((dest[0] === row - 1) && (dest[1] === column + 1)) {
+  //          moves.push([row - 1, column + 1])
+  //       }
+  //     }
+  //   } else {
+  //     // option to advance 2 spaces on first move
+  //     if (row === 1) { moves.push([row + 2, column]) }
+  //
+  //     // standard 1 space advance
+  //     if (range.includes(row + 1) && !squareArray[dest[0]][dest[1]]) { moves.push([row + 1, column]) }
+  //
+  //     // diagonal capture
+  //     if (squareArray[dest[0]][dest[1]] && selectedSquare.props.color === 'white') { // if selected square has value && is other color
+  //       if ((dest[0] === row + 1) && (dest[1] === column - 1)) {
+  //          moves.push([row + 1, column - 1])
+  //       }
+  //       if ((dest[0] === row + 1) && (dest[1] === column + 1)) {
+  //          moves.push([row + 1, column + 1])
+  //       }
+  //     }
+  //   }
+  //   return moves
+  // }
 
   jumpTo(step) {
     this.setState({
