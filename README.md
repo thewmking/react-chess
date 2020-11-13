@@ -12,7 +12,12 @@ todo:
 - [x] handle piece moving
 - [x] handle capturing
 - [ ] add history
-- [ ] add valid moves for each piece
+- [ ] add valid moves for pawn
+- [ ] add valid moves for rook
+- [ ] add valid moves for knight
+- [ ] add valid moves for bishop
+- [ ] add valid moves for queen
+- [ ] add valid moves for king
 - [ ] handle travel path for rook, bishop, & queen
 - [ ] add check & checkmate logic
 - [ ] add pawn promotion

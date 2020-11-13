@@ -2,13 +2,13 @@ import Square from './Square.js';
 import React from 'react';
 
 class Board extends React.Component {
-  renderSquare(square, rowIndex, index) {
+  renderSquare(square, rowIndex, colIndex) {
     return (
       <Square
         value={square}
-        onClick={() => this.props.onClick(square, rowIndex, index)}
-        key={[rowIndex, index].toString()}
-        active={this.props.activeSquare && this.props.activeSquare.coordinates.toString() === [rowIndex, index].toString()}
+        onClick={() => this.props.onClick(square, [rowIndex, colIndex])}
+        key={[rowIndex, colIndex].toString()}
+        active={this.props.activeSquare && this.props.activeSquare.coordinates.toString() === [rowIndex, colIndex].toString()}
       />
     );
   }
@@ -17,8 +17,8 @@ class Board extends React.Component {
     var key = 'row-' + rowIndex;
     return (
       <div className="board-row" key={key}>
-        {this.props.squareArray[rowIndex].map((square, index) =>
-          this.renderSquare(square, rowIndex, index)
+        {this.props.squareArray[rowIndex].map((square, colIndex) =>
+          this.renderSquare(square, rowIndex, colIndex)
         )}
       </div>
     );

@@ -69,13 +69,14 @@ class Game extends React.Component {
     return array
   }
 
-  handleClick(square, rowIndex, index) {
-    console.log('Handling click for square: [' + rowIndex + ', ' + index + ']');
+  handleClick(selectedSquare, dest) {
+    console.log('Handling click for square: [' + dest[0] + ', ' + dest[1] + ']');
+    console.log(selectedSquare)
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[this.state.stepNumber];
     const squareArray = current.squareArray.slice();
     const currentColor = this.state.whiteIsNext ? 'white' : 'black'
-    
+
     // check for winner
     if (calculateWinner(squareArray)) {
       return;
@@ -85,20 +86,24 @@ class Game extends React.Component {
     if (this.state.activeSquare) {
       const coordinates = this.state.activeSquare.coordinates
       // reset activeSquare if user selects current activeSquare
-      if (coordinates.toString() === [rowIndex, index].toString()) {
+      if (coordinates.toString() === dest.toString()) {
         this.setState({
           activeSquare: null
         })
+        return;
       }
 
-      // move selected piece if next selection is empty or is enemy piece
-      if (!squareArray[rowIndex][index] || (currentColor !== square.props.color)) {
-        squareArray[rowIndex][index] = this.state.activeSquare.value
+      // move selected piece if selection is valid move
+      if (this.validMove(squareArray, selectedSquare, dest, currentColor, coordinates)) {
+        squareArray[dest[0]][dest[1]] = this.state.activeSquare.value
         squareArray[coordinates[0]][coordinates[1]] = null
         this.setState({
           activeSquare: null,
           whiteIsNext: !this.state.whiteIsNext
         })
+      } else {
+        alert('Invalid move.')
+        return;
       }
 
       // set board history
@@ -110,15 +115,48 @@ class Game extends React.Component {
       })
     } else {
       // set activeSquare if selected square has contents && is current user color
-      if (squareArray[rowIndex][index] && (currentColor === square.props.color)) {
+      if (squareArray[dest[0]][dest[1]] && (currentColor === selectedSquare.props.color)) {
         this.setState({
-          activeSquare: { value: square, coordinates: [rowIndex, index]}
+          activeSquare: { value: selectedSquare, coordinates: dest }
         })
       } else {
         alert('Select a ' + currentColor + ' piece.')
         return;
       }
     }
+  }
+
+  validMove(squareArray, selectedSquare, dest, currentColor, coordinates) {
+    // return true if next selection is in available moves && is empty or is enemy piece
+    console.log('dest: ')
+    console.log(dest)
+    if (this.moves(squareArray, coordinates[0], coordinates[1]).includes(dest.toString()) && (!squareArray[dest[0]][dest[1]] || (currentColor !== selectedSquare.props.color))) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  moves(squareArray, row, column) {
+    const activeSquare = this.state.activeSquare
+    const moves = []
+    const range = [...Array(8).keys()]
+    console.log('activeSquare:')
+    console.log(activeSquare)
+    if (activeSquare.value.type.name.toString() === 'Pawn') {
+      if (activeSquare.value.props.color === 'white') {
+        if (row === 6) { moves.push([row - 2, column]) } // option to advance 2 spaces on first move
+        if (range.includes(row - 1)) {
+          moves.push([row - 1, column])
+        }
+      } else {
+        if (row === 1) { moves.push([row + 2, column]) } // option to advance 2 spaces on first move
+        moves.push([row + 1, column])
+      }
+    }
+    console.log('moves:');
+    console.log(moves)
+    return moves.map(x => x.toString());
   }
 
   jumpTo(step) {
@@ -155,7 +193,7 @@ class Game extends React.Component {
         <div className="game-board">
           <Board
             squareArray={current.squareArray}
-            onClick={(square, rowIndex, index) => this.handleClick(square, rowIndex, index)}
+            onClick={(selectedSquare, dest) => this.handleClick(selectedSquare, dest)}
             activeSquare={this.state.activeSquare}
           />
         </div>
