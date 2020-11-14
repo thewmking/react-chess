@@ -3,12 +3,23 @@ import React from 'react';
 
 class Board extends React.Component {
   renderSquare(square, rowIndex, colIndex) {
+    let darkSquare = false
+    if ((rowIndex+1) % 2 === 0) {
+      if ((colIndex+1) % 2 !== 0) {
+        darkSquare = true
+      }
+    } else {
+      if ((colIndex+1) % 2 === 0) {
+        darkSquare = true
+      }
+    }
     return (
       <Square
         value={square}
         onClick={() => this.props.onClick(square, [rowIndex, colIndex])}
         key={[rowIndex, colIndex].toString()}
         active={this.props.activeSquare && this.props.activeSquare.coordinates.toString() === [rowIndex, colIndex].toString()}
+        darkSquare={darkSquare}
       />
     );
   }

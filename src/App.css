@@ -65,6 +65,10 @@ ol, ul {
   background: #88ffd7;
 }
 
+.square.dark {
+  background: #e4e3e3;
+}
+
 .kbd-navigation .square:focus {
   background: #ddd;
 }
