@@ -11,6 +11,7 @@ import Pawn from './pieces/Pawn.js';
 
 // moves
 import {pawnMoves} from '../moves/pawnMoves.js'
+import {kingMoves} from '../moves/kingMoves.js'
 
 
 class Game extends React.Component {
@@ -134,10 +135,9 @@ class Game extends React.Component {
 
   validMove(squareArray, selectedSquare, dest, currentColor, origin) {
     // return true if next selection is in available moves && is empty or is enemy piece
-    console.log('dest: ')
-    console.log(dest)
     const availableMoves = this.moves(squareArray, origin, dest, currentColor, selectedSquare)
-    if (availableMoves.includes(dest.toString()) && (!squareArray[dest[0]][dest[1]] || (currentColor !== selectedSquare.props.color))) {
+    const cellValid = (!squareArray[dest[0]][dest[1]] || (currentColor !== selectedSquare.props.color))
+    if (availableMoves.includes(dest.toString()) && cellValid) {
       return true
     } else {
       return false
@@ -155,8 +155,9 @@ class Game extends React.Component {
     if (activeSquare.value.type.name.toString() === 'Pawn') {
       moves = pawnMoves(activeSquare, row, column, dest, squareArray, currentColor, selectedSquare, range)
     }
-    console.log('moves:');
-    console.log(moves)
+    if (activeSquare.value.type.name.toString() === 'King') {
+      moves = kingMoves(row, column, range)
+    }
     return moves.map(x => x.toString());
   }
 

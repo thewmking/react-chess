@@ -17,7 +17,7 @@ todo:
 - [ ] add valid moves for knight
 - [ ] add valid moves for bishop
 - [ ] add valid moves for queen
-- [ ] add valid moves for king
+- [x] add valid moves for king
 - [ ] handle travel path for rook, bishop, & queen
 - [ ] add check & checkmate logic
 - [ ] add pawn promotion
