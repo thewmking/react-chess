@@ -13,6 +13,7 @@ import Pawn from './pieces/Pawn.js';
 import {pawnMoves} from '../moves/pawnMoves.js'
 import {rookMoves} from '../moves/rookMoves.js'
 import {bishopMoves} from '../moves/bishopMoves.js'
+import {knightMoves} from '../moves/knightMoves.js'
 import {kingMoves} from '../moves/kingMoves.js'
 
 
@@ -165,6 +166,9 @@ class Game extends React.Component {
     }
     if (activeSquare.value.type.name.toString() === 'Bishop') {
       moves = bishopMoves(row, column, range)
+    }
+    if (activeSquare.value.type.name.toString() === 'Knight') {
+      moves = knightMoves(row, column, range)
     }
     return moves.map(x => x.toString());
   }

@@ -14,8 +14,8 @@ todo:
 - [ ] add history
 - [x] add valid moves for pawn
 - [x] add valid moves for rook
-- [ ] add valid moves for knight
-- [ ] add valid moves for bishop
+- [x] add valid moves for knight
+- [x] add valid moves for bishop
 - [ ] add valid moves for queen
 - [x] add valid moves for king
 - [ ] handle travel path for rook, bishop, & queen
