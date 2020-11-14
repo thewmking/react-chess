@@ -16,7 +16,7 @@ todo:
 - [x] add valid moves for rook
 - [x] add valid moves for knight
 - [x] add valid moves for bishop
-- [ ] add valid moves for queen
+- [x] add valid moves for queen
 - [x] add valid moves for king
 - [ ] handle travel path for rook, bishop, & queen
 - [ ] add check & checkmate logic

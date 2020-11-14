@@ -4,17 +4,18 @@ import React from 'react';
 import Board from './Board.js'
 import King from './pieces/King.js';
 import Queen from './pieces/Queen.js';
-import Rook from './pieces/Rook.js';
-import Knight from './pieces/Knight.js';
 import Bishop from './pieces/Bishop.js';
+import Knight from './pieces/Knight.js';
+import Rook from './pieces/Rook.js';
 import Pawn from './pieces/Pawn.js';
 
 // moves
-import {pawnMoves} from '../moves/pawnMoves.js'
-import {rookMoves} from '../moves/rookMoves.js'
+import {kingMoves} from '../moves/kingMoves.js'
+import {queenMoves} from '../moves/queenMoves.js'
 import {bishopMoves} from '../moves/bishopMoves.js'
 import {knightMoves} from '../moves/knightMoves.js'
-import {kingMoves} from '../moves/kingMoves.js'
+import {rookMoves} from '../moves/rookMoves.js'
+import {pawnMoves} from '../moves/pawnMoves.js'
 
 
 class Game extends React.Component {
@@ -155,20 +156,23 @@ class Game extends React.Component {
     const range        = [...Array(8).keys()]
     console.log('activeSquare:')
     console.log(activeSquare)
-    if (activeSquare.value.type.name.toString() === 'Pawn') {
-      moves = pawnMoves(activeSquare, row, column, dest, squareArray, currentColor, selectedSquare, range)
-    }
     if (activeSquare.value.type.name.toString() === 'King') {
       moves = kingMoves(row, column, range)
     }
-    if (activeSquare.value.type.name.toString() === 'Rook') {
-      moves = rookMoves(row, column, range)
+    if (activeSquare.value.type.name.toString() === 'Queen') {
+      moves = queenMoves(row, column, range)
     }
     if (activeSquare.value.type.name.toString() === 'Bishop') {
       moves = bishopMoves(row, column, range)
     }
     if (activeSquare.value.type.name.toString() === 'Knight') {
       moves = knightMoves(row, column, range)
+    }
+    if (activeSquare.value.type.name.toString() === 'Rook') {
+      moves = rookMoves(row, column, range)
+    }
+    if (activeSquare.value.type.name.toString() === 'Pawn') {
+      moves = pawnMoves(activeSquare, row, column, dest, squareArray, currentColor, selectedSquare, range)
     }
     return moves.map(x => x.toString());
   }
