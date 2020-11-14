@@ -6,7 +6,7 @@ loosely based on my [ruby-chess](https://github.com/thewmking/ruby-chess) comman
 todo:
 
 - [x] build board grid
-- [ ] style board
+- [x] style board
 - [x] add all piece types
 - [x] handle piece selection
 - [x] handle piece moving
