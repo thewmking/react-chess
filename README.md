@@ -13,7 +13,7 @@ todo:
 - [x] handle capturing
 - [ ] add history
 - [x] add valid moves for pawn
-- [ ] add valid moves for rook
+- [x] add valid moves for rook
 - [ ] add valid moves for knight
 - [ ] add valid moves for bishop
 - [ ] add valid moves for queen
