@@ -17,6 +17,10 @@ import {knightMoves} from '../moves/knightMoves.js'
 import {rookMoves} from '../moves/rookMoves.js'
 import {pawnMoves} from '../moves/pawnMoves.js'
 
+// paths
+import {rookPath} from '../paths/rookPath.js'
+
+
 
 class Game extends React.Component {
   constructor(props) {
@@ -95,7 +99,8 @@ class Game extends React.Component {
 
     // if activeSquare present
     if (this.state.activeSquare) {
-      const origin = this.state.activeSquare.coordinates
+      const activeSquare = this.state.activeSquare
+      const origin = activeSquare.coordinates
       // reset activeSquare if user selects current activeSquare
       if (origin.toString() === dest.toString()) {
         this.setState({
@@ -105,8 +110,8 @@ class Game extends React.Component {
       }
 
       // move selected piece if selection is valid move
-      if (this.validMove(squareArray, selectedSquare, dest, currentColor, origin)) {
-        squareArray[dest[0]][dest[1]] = this.state.activeSquare.value
+      if (this.validMove(squareArray, origin, dest, currentColor, selectedSquare, activeSquare)) {
+        squareArray[dest[0]][dest[1]] = activeSquare.value
         squareArray[origin[0]][origin[1]] = null
         this.setState({
           activeSquare: null,
@@ -137,23 +142,23 @@ class Game extends React.Component {
     }
   }
 
-  validMove(squareArray, selectedSquare, dest, currentColor, origin) {
-    // return true if next selection is in available moves && is empty or is enemy piece
-    const availableMoves = this.moves(squareArray, origin, dest, currentColor, selectedSquare)
-    const cellValid = (!squareArray[dest[0]][dest[1]] || (currentColor !== selectedSquare.props.color))
-    if (availableMoves.includes(dest.toString()) && cellValid) {
+  validMove(squareArray, origin, dest, currentColor, selectedSquare, activeSquare) {
+    const availableMoves = this.moves(squareArray, origin, dest, currentColor, selectedSquare, activeSquare) // get available moves
+    const cellValid = (!squareArray[dest[0]][dest[1]] || (currentColor !== selectedSquare.props.color)) // is empty or is enemy piece
+    const pathEmpty = this.getPathValues(squareArray, selectedSquare, origin, dest, activeSquare).filter(Boolean).length === 0
+    // todo: remove moves that would put king in check
+    if (availableMoves.includes(dest.toString()) && cellValid && pathEmpty) {
       return true
     } else {
       return false
     }
   }
 
-  moves(squareArray, origin, dest, currentColor, selectedSquare) {
-    const activeSquare = this.state.activeSquare
-    const row          = origin[0]
-    const column       = origin[1]
-    let moves          = []
-    const range        = [...Array(8).keys()]
+  moves(squareArray, origin, dest, currentColor, selectedSquare, activeSquare) {
+    const row    = origin[0]
+    const column = origin[1]
+    let   moves  = []
+    const range  = [...Array(8).keys()]
     console.log('activeSquare:')
     console.log(activeSquare)
     if (activeSquare.value.type.name.toString() === 'King') {
@@ -177,44 +182,22 @@ class Game extends React.Component {
     return moves.map(x => x.toString());
   }
 
-  // pawnMoves(activeSquare, row, column, dest, squareArray, currentColor, selectedSquare, range) {
-  //   const moves = []
-  //   if (activeSquare.value.props.color === 'white') {
-  //
-  //     // option to advance 2 spaces on first move
-  //     if (row === 6) { moves.push([row - 2, column]) }
-  //
-  //     // standard 1 space advance
-  //     if (range.includes(row - 1) && !squareArray[dest[0]][dest[1]]) { moves.push([row - 1, column]) }
-  //
-  //     // diagonal capture
-  //     if (squareArray[dest[0]][dest[1]] && selectedSquare.props.color === 'black') { // if selected square has value && is other color
-  //       if ((dest[0] === row - 1) && (dest[1] === column - 1)) {
-  //          moves.push([row - 1, column - 1])
-  //       }
-  //       if ((dest[0] === row - 1) && (dest[1] === column + 1)) {
-  //          moves.push([row - 1, column + 1])
-  //       }
-  //     }
-  //   } else {
-  //     // option to advance 2 spaces on first move
-  //     if (row === 1) { moves.push([row + 2, column]) }
-  //
-  //     // standard 1 space advance
-  //     if (range.includes(row + 1) && !squareArray[dest[0]][dest[1]]) { moves.push([row + 1, column]) }
-  //
-  //     // diagonal capture
-  //     if (squareArray[dest[0]][dest[1]] && selectedSquare.props.color === 'white') { // if selected square has value && is other color
-  //       if ((dest[0] === row + 1) && (dest[1] === column - 1)) {
-  //          moves.push([row + 1, column - 1])
-  //       }
-  //       if ((dest[0] === row + 1) && (dest[1] === column + 1)) {
-  //          moves.push([row + 1, column + 1])
-  //       }
-  //     }
-  //   }
-  //   return moves
-  // }
+  getPathValues(squareArray, selectedSquare, origin, dest, activeSquare) {
+    let pathSquares = []
+    let pathValues
+    const range  = [...Array(8).keys()]
+    let [row, column] = [origin[0], origin[1]]
+    let [x, y] = [dest[0] - row, dest[1] - column]
+    if (activeSquare.value.type.name.toString() === 'Rook') {
+      pathSquares = rookPath(row, column, x, y, range)
+    }
+    pathValues = pathSquares.map(square => {
+      return squareArray[square[0]][square[1]]
+    })
+    console.log('pathValues')
+    console.log(pathValues)
+    return pathValues
+  }
 
   jumpTo(step) {
     this.setState({

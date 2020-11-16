@@ -18,7 +18,9 @@ todo:
 - [x] add valid moves for bishop
 - [x] add valid moves for queen
 - [x] add valid moves for king
-- [ ] handle travel path for rook, bishop, & queen
+- [x] handle travel path for rook
+- [ ] handle travel path for bishop
+- [ ] handle travel path for queen
 - [ ] add check & checkmate logic
 - [ ] add pawn promotion
 - [ ] add _en passant_ pawn capture
