@@ -3,7 +3,7 @@ export const pawnMoves = (activeSquare, row, column, dest, squareArray, currentC
   if (activeSquare.value.props.color === 'white') {
 
     // option to advance 2 spaces on first move
-    if (row === 6) { moves.push([row - 2, column]) }
+    if (row === 6 && !squareArray[5][column]) { moves.push([row - 2, column]) }
 
     // standard 1 space advance
     if (range.includes(row - 1) && !squareArray[dest[0]][dest[1]]) { moves.push([row - 1, column]) }
@@ -19,7 +19,7 @@ export const pawnMoves = (activeSquare, row, column, dest, squareArray, currentC
     }
   } else {
     // option to advance 2 spaces on first move
-    if (row === 1) { moves.push([row + 2, column]) }
+    if (row === 1 && !squareArray[2][column]) { moves.push([row + 2, column]) }
 
     // standard 1 space advance
     if (range.includes(row + 1) && !squareArray[dest[0]][dest[1]]) { moves.push([row + 1, column]) }
