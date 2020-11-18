@@ -20,7 +20,7 @@ todo:
 - [x] add valid moves for king
 - [x] handle travel path for rook
 - [x] handle travel path for bishop
-- [ ] handle travel path for queen
+- [x] handle travel path for queen
 - [ ] add check & checkmate logic
 - [ ] add pawn promotion
 - [ ] add _en passant_ pawn capture
