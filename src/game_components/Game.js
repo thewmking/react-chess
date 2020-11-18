@@ -19,6 +19,7 @@ import {pawnMoves} from '../moves/pawnMoves.js'
 
 // paths
 import {rookPath} from '../paths/rookPath.js'
+import {bishopPath} from '../paths/bishopPath.js'
 
 
 
@@ -190,6 +191,9 @@ class Game extends React.Component {
     let [x, y] = [dest[0] - row, dest[1] - column]
     if (activeSquare.value.type.name.toString() === 'Rook') {
       pathSquares = rookPath(row, column, x, y, range)
+    }
+    if (activeSquare.value.type.name.toString() === 'Bishop') {
+      pathSquares = bishopPath(row, column, x, y, range)
     }
     pathValues = pathSquares.map(square => {
       return squareArray[square[0]][square[1]]
